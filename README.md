@@ -68,8 +68,8 @@ fastapi-book-project/
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/hng12-devbotops/fastapi-book-project.git
-   cd fastapi-book-project
+   git clone https://github.com/Fantasy1905/FastAPI_Book_Application.git
+   cd fastapi_book_application
    ```
 
 2. **Create a virtual environment:**
