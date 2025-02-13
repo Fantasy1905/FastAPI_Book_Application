@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
         
       # set up docker buildx (improves caching and build performance)
-      - names: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       # log in to docker hub using secrets stored in your repository
