@@ -1,0 +1,50 @@
+name: Deploy Pipeline
+
+on:
+  push:
+    branches: 
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      # set up docker buildx (improves caching and build performance)
+      - names: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # log in to docker hub using secrets stored in your repository
+      - name: Login to DockerHub
+        uses: docker/setup-buildx-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DUCKERHUB_TOKEN }}
+
+        # build the doucker image and push it to docker hub.
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with: 
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: fantasy19/fastapi-app:latest
+        # replace "your-dockerhub-username" with your actual docker hub username
+
+        # deploy the new image to your server..
+        # In this example, we ssh into the server, pull the latest image, stop any existing container,
+        # remove it, and then run the new container.
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo docker pull fantasy19/fastapi-app:latest
+            sudo docker stop fastapi-app || true
+            sudo docker rm fastapi-app || true
+            sudo docker run -d --name fastapi-app -p 8000:8000 fantasy19/fastapi-app:latest
